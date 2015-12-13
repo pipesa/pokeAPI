@@ -1,0 +1,11 @@
+platform :ios, '8.0'
+
+target 'pokeAPI' do
+pod 'Realm'
+pod 'AFNetworking'
+end
+
+target 'pokeAPITests' do
+
+end
+

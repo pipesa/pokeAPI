@@ -1,2 +1,6 @@
 # pokeAPI
-Testing pokemon API
+Testing pokemon API - Objective-C
+
+# Libraries
+- AFNetworking
+- Realm

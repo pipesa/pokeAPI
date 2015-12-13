@@ -1,0 +1,15 @@
+//
+//  PokeAPI-PrefixHeader.pch
+//  pokeAPI
+//
+//  Created by Felipe on 12/13/15.
+//  Copyright © 2015 FelipeSalinas. All rights reserved.
+//
+
+#ifdef __OBJC__
+    #import <UIKit/UIKit.h>
+    #import <Foundation/Foundation.h>
+    #import "AFNetworking.h"
+    #import <Realm/Realm.h>
+    #import "PokeAPIHTTPClient.h"
+#endif
