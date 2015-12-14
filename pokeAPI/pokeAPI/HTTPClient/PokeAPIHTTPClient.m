@@ -8,7 +8,7 @@
 
 #import "PokeAPIHTTPClient.h"
 
-static NSString * const pokeAPIURLString = @"http://pokeapi.co/api/v1/";
+static NSString * const pokeAPIURLString = @"http://pokeapi.co";
 
 @implementation PokeAPIHTTPClient
 
@@ -36,12 +36,21 @@ static NSString * const pokeAPIURLString = @"http://pokeapi.co/api/v1/";
     return self;
 }
 
-- (void)loadPokemonList:(NSDictionary *)params withComplition:(void (^)(BOOL, id, NSError *))complition {
+- (void)loadPokemonList:(NSString *)pathURL withComplition:(void (^)(BOOL, id, NSError *))complition {
     
-    [self GET:@"pokemon" parameters:@{@"limit":@"5"} progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self GET:pathURL parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (complition) {
             NSLog(@"%@",responseObject);
-            complition(YES,responseObject,nil);
+            NSDictionary *newObjects = responseObject[@"objects"];
+            NSMutableArray *pokemons = [NSMutableArray array];
+            for (NSDictionary *newItem in newObjects) {
+                [pokemons addObject:[self saveNewItems:newItem]];
+            }
+            
+            NSDictionary *newResponse = @{@"newURL":responseObject[@"meta"][@"next"] ? responseObject[@"meta"][@"next"]:@"",
+                                          @"objects":pokemons};
+            
+            complition(YES,newResponse,nil);
         }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         if (complition) {
@@ -49,6 +58,33 @@ static NSString * const pokeAPIURLString = @"http://pokeapi.co/api/v1/";
             complition(NO,nil,error);
         }
     }];
+}
+
+- (Pokemon *)saveNewItems:(NSDictionary *)newPokemon {
+    Pokemon *newItem = [[Pokemon alloc] init];
+    
+    newItem.objID = newItem[@"pkdx_id"];
+    newItem.name = newItem[@"name"];
+    newItem.nationalID = newItem[@"national_id"];
+    newItem.created = newItem[@"created"];
+    newItem.modified = newItem[@"modified"];
+    newItem.abilities = newItem[@"abilities"];
+    newItem.evolutions = newItem[@"evolutions"];
+    newItem.descriptions = newItem[@"descriptions"];
+    newItem.moves = newItem[@"moves"];
+    newItem.types = newItem[@"types"];
+    newItem.catchRate = newItem[@"catchRate"];
+    newItem.hp = newItem[@"hp"];
+    newItem.attack = newItem[@"attack"];
+    newItem.defense = newItem[@"defense"];
+    newItem.speed = newItem[@"speed"];
+    newItem.height = newItem[@"height"];
+    newItem.weight = newItem[@"weight"];
+    newItem.maleFemale = newItem[@"maleFemale"];
+    
+    [newItem save];
+    
+    return newItem;
 }
 
 @end

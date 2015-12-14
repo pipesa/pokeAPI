@@ -14,21 +14,33 @@
 
 @implementation PokemonTableViewController
 
+ NSString *pathURL = @"/api/v1/pokemon/?limit=30";
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[PokeAPIHTTPClient sharedInstance] loadPokemonList:nil withComplition:^(BOOL success, id response, NSError *error) {
+    [self loadPokemon:pathURL];
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+- (void)loadPokemon:(NSString *)newPathURL {
+    [[PokeAPIHTTPClient sharedInstance] loadPokemonList:newPathURL withComplition:^(BOOL success, id response, NSError *error) {
         if (success) {
-            NSLog(@"Response: %lu",[response[@"objects"] count]);
+            pathURL = response[@"newURL"];
+            NSLog(@"NEW URL: %@",pathURL);
+            
         }else {
             NSLog(@"Response: %@",error);
         }
     }];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)saveObjects:(NSArray *)newObject {
+    
 }
 
 #pragma mark - Table view data source

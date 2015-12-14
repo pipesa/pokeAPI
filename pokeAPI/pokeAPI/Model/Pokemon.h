@@ -10,20 +10,24 @@
 
 @interface Pokemon : RLMObject
 
-@property NSString * email;
-@property NSString * firstName;
-@property NSString * lastName;
 @property NSString * objID;
-@property NSString * identifier;
-@property NSString * password;
-@property NSString * address;
-@property NSDate * birthdate;
-@property NSString * cellphone;
-@property NSString * phone;
-@property NSString * fbid;
-@property NSString * gender;
-@property NSString * paymentType;
-@property NSString * token;
+@property NSString * name;
+@property NSString * nationalID;
+@property NSString * created;
+@property NSString * modified;
+@property NSString * abilities;
+@property NSString * evolutions;
+@property NSString * descriptions;
+@property NSString * moves;
+@property NSString * types;
+@property NSString * catchRate;
+@property NSString * hp;
+@property NSString * attack;
+@property NSString * defense;
+@property NSString * speed;
+@property NSString * height;
+@property NSString * weight;
+@property NSString * maleFemale;
 
 - (void)save;
 - (void)remove;

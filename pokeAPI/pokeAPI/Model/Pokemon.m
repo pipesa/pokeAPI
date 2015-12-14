@@ -10,18 +10,62 @@
 
 @implementation Pokemon
 
-// Specify default values for properties
+- (void)save
+{
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm addObject:self];
+    [realm commitWriteTransaction];
+}
 
-//+ (NSDictionary *)defaultPropertyValues
-//{
-//    return @{};
-//}
+- (void)remove
+{
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteObject:self];
+    [realm commitWriteTransaction];
+}
+
+- (void)removeAllObjects
+{
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    [realm deleteAllObjects];
+    [realm commitWriteTransaction];
+}
+
+
+// Specify default values for properties
++ (NSDictionary *)defaultPropertyValues
+{
+    return @{@"objID":@"",
+             @"name":@"",
+             @"nationalID":@"",
+             @"created":@"",
+             @"modified":@"",
+             @"abilities":@"",
+             @"evolutions":@"",
+             @"descriptions":@"",
+             @"moves":@"",
+             @"types":@"",
+             @"catchRate":@"",
+             @"hp":@"",
+             @"attack":@"",
+             @"defense":@"",
+             @"speed":@"",
+             @"height":@"",
+             @"weight":@"",
+             @"maleFemale":@""};
+}
 
 // Specify properties to ignore (Realm won't persist these)
++ (NSArray *)ignoredProperties
+{
+    return @[];
+}
 
-//+ (NSArray *)ignoredProperties
-//{
-//    return @[];
-//}
++ (NSString *)primaryKey {
+    return @"objID";
+}
 
 @end

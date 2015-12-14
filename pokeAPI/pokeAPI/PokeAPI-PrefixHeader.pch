@@ -12,4 +12,5 @@
     #import "AFNetworking.h"
     #import <Realm/Realm.h>
     #import "PokeAPIHTTPClient.h"
+    #import "Pokemon.h"
 #endif

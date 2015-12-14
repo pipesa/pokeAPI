@@ -13,7 +13,7 @@
 + (PokeAPIHTTPClient *)sharedInstance;
 - (instancetype)initWithBaseURL:(NSURL *)url;
 
-- (void) loadPokemonList:(NSDictionary *)params
+- (void) loadPokemonList:(NSString *)params
      withComplition:(void(^)(BOOL success,id response, NSError *error))complition;
 
 @end
