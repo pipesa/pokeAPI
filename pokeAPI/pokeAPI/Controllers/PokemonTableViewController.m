@@ -10,16 +10,19 @@
 
 @interface PokemonTableViewController ()
 
+@property (strong, nonatomic) NSString *pathURL;
+@property (strong, nonatomic) RLMResults *pokemonArray;
+
 @end
 
 @implementation PokemonTableViewController
 
- NSString *pathURL = @"/api/v1/pokemon/?limit=30";
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self loadPokemon:pathURL];
+    [self registerTableViewCell];
+    
+    [self loadPokemon:[self pathURL]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -28,19 +31,33 @@
 }
 
 - (void)loadPokemon:(NSString *)newPathURL {
-    [[PokeAPIHTTPClient sharedInstance] loadPokemonList:newPathURL withComplition:^(BOOL success, id response, NSError *error) {
-        if (success) {
-            pathURL = response[@"newURL"];
-            NSLog(@"NEW URL: %@",pathURL);
-            
-        }else {
-            NSLog(@"Response: %@",error);
-        }
-    }];
+    
+    [self startSpinner];
+    
+    RLMResults * oldObjects = [Pokemon allObjects];
+    
+    if ([oldObjects count] > 0) {
+        [self setPathURL:[NSString stringWithFormat:@"/api/v1/pokemon/?limit=30&offset=%lu",(unsigned long)[oldObjects count]]];
+        [self setPokemonArray:oldObjects];
+        self.tableView.tableFooterView = [[UIView alloc] init];
+        [[self tableView] reloadData];
+    }else {
+        [self setPathURL:@"/api/v1/pokemon/?limit=30"];
+        [self loadObjectsFromAPI:[self pathURL]];
+    }
 }
 
-- (void)saveObjects:(NSArray *)newObject {
-    
+- (void)loadObjectsFromAPI:(NSString *)newPathURL {
+    [[PokeAPIHTTPClient sharedInstance] loadPokemonList:newPathURL withComplition:^(BOOL success, id response, NSError *error) {
+        if (success) {
+            [self setPathURL:response[@"newURL"]];
+            [self setPokemonArray:response[@"objects"]];
+            self.tableView.tableFooterView = [[UIView alloc] init];
+            [[self tableView] reloadData];
+        }else {
+            NSLog(@"Error: %@",error);
+        }
+    }];
 }
 
 #pragma mark - Table view data source
@@ -50,15 +67,74 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    if ([[self pokemonArray] count] > 0) {
+        return [[self pokemonArray] count];
+    }else {
+        return 0;
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"PokemonCell" forIndexPath:indexPath];
+    PokemonTableViewCell *pokemonCell = [self.tableView dequeueReusableCellWithIdentifier:@"PokemonTableViewCell"];
     
-    // Configure the cell...
+    Pokemon *currentPokemon = [[self pokemonArray] objectAtIndex:indexPath.row];
     
-    return cell;
+    pokemonCell.delegate = self;
+    [pokemonCell.pokemonLabel setText:currentPokemon.name];
+    pokemonCell.pokemonID = currentPokemon.objID;
+    
+    if ([[currentPokemon isFavorite] isEqualToString:@"1"]) {
+        [pokemonCell.favoriteButton setImage:[UIImage imageNamed:@"Star-On"] forState:UIControlStateNormal];
+    }else {
+        [pokemonCell.favoriteButton setImage:[UIImage imageNamed:@"Star-Off"] forState:UIControlStateNormal];
+    }
+    
+    return pokemonCell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Pokemon *currentPokemon = [[self pokemonArray] objectAtIndex:indexPath.row];
+    
+    DetailTableViewController *detailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DetailTableViewController"];
+    
+    detailTableViewController.pokemonDetail = currentPokemon;
+    
+    [self.navigationController pushViewController:detailTableViewController animated:YES];
+}
+
+#pragma mark - Spinner
+
+- (void) startSpinner {
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner startAnimating];
+    spinner.frame = CGRectMake(0, 0, 44, 44);
+    self.tableView.tableFooterView = spinner;
+}
+
+#pragma mark - Register Cells
+
+- (void)registerTableViewCell{
+    [self.tableView registerNib:[UINib nibWithNibName:@"PokemonTableViewCell" bundle:nil] forCellReuseIdentifier:@"PokemonTableViewCell"];
+}
+
+#pragma mark - Pokemon Cell Delegate
+-(void)addFavorite:(NSString *)productID {
+    RLMRealm *realm = [RLMRealm defaultRealm];
+    [realm beginWriteTransaction];
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"objID = %@",productID];
+    Pokemon *currentPokemon = [[Pokemon objectsWithPredicate:pred] firstObject];
+    
+    if ([[currentPokemon isFavorite] isEqualToString:@"1"]) {
+        currentPokemon.isFavorite = @"0";
+    }else {
+        currentPokemon.isFavorite = @"1";
+    }
+    
+    [realm commitWriteTransaction];
+    
+    [[self tableView] reloadData];
 }
 
 @end

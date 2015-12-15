@@ -10,6 +10,8 @@
 
 @interface FavoritesTableViewController ()
 
+@property (strong, nonatomic) RLMResults *favoritesArray;
+
 @end
 
 @implementation FavoritesTableViewController
@@ -17,16 +19,43 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [self registerTableViewCell];
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [self loadFavorites];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)loadFavorites {
+    
+    [self startSpinner];
+    
+    NSPredicate *pred = [NSPredicate predicateWithFormat:@"isFavorite = %@",@"1"];
+    RLMResults * favoritesPokemon = [Pokemon objectsWithPredicate:pred];
+    
+    if ([favoritesPokemon count] > 0) {
+        [self setFavoritesArray:favoritesPokemon];
+        self.tableView.backgroundView = [[UIView alloc] init];
+        [[self tableView] reloadData];
+    }else {
+        UILabel *messageLbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0,
+                                                                        self.tableView.bounds.size.width,
+                                                                        self.tableView.bounds.size.height)];
+        messageLbl.text = @"You do not have favorite Pokemons!";
+        messageLbl.textAlignment = NSTextAlignmentCenter;
+        [messageLbl sizeToFit];
+        
+        self.tableView.backgroundView = messageLbl;
+        
+        [[self tableView] reloadData];
+    }
+    
+    self.tableView.tableFooterView = [[UIView alloc] init];
 }
 
 #pragma mark - Table view data source
@@ -36,61 +65,56 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 2;
+    if ([[self favoritesArray] count] > 0) {
+        return [[self favoritesArray] count];
+    }else {
+        return 0;
+    }
 }
 
-/*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    PokemonTableViewCell *pokemonCell = [self.tableView dequeueReusableCellWithIdentifier:@"PokemonTableViewCell"];
     
-    // Configure the cell...
+    Pokemon *currentPokemon = [[self favoritesArray] objectAtIndex:indexPath.row];
     
-    return cell;
+    pokemonCell.delegate = self;
+    [pokemonCell.pokemonLabel setText:currentPokemon.name];
+    pokemonCell.pokemonID = currentPokemon.objID;
+    
+    [pokemonCell.favoriteButton setHidden:YES];
+    
+    return pokemonCell;
 }
-*/
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    Pokemon *currentPokemon = [[self favoritesArray] objectAtIndex:indexPath.row];
+    
+    DetailTableViewController *detailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DetailTableViewController"];
+    
+    detailTableViewController.pokemonDetail = currentPokemon;
+    
+    [self.navigationController pushViewController:detailTableViewController animated:YES];
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+#pragma mark - Spinner
+
+- (void) startSpinner {
+    
+    UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    [spinner startAnimating];
+    spinner.frame = CGRectMake(0, 0, 44, 44);
+    self.tableView.tableFooterView = spinner;
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+#pragma mark - Register Cells
+
+- (void)registerTableViewCell{
+    [self.tableView registerNib:[UINib nibWithNibName:@"PokemonTableViewCell" bundle:nil] forCellReuseIdentifier:@"PokemonTableViewCell"];
 }
-*/
 
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
+#pragma mark - Pokemon Cell Delegate
+-(void)addFavorite:(NSString *)productID {
+    
 }
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

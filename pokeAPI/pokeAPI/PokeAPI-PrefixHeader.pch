@@ -13,4 +13,6 @@
     #import <Realm/Realm.h>
     #import "PokeAPIHTTPClient.h"
     #import "Pokemon.h"
+    #import "PokemonTableViewCell.h"
+    #import "DetailTableViewController.h"
 #endif

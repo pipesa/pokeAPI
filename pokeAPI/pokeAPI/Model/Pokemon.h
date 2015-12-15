@@ -28,6 +28,7 @@
 @property NSString * height;
 @property NSString * weight;
 @property NSString * maleFemale;
+@property NSString * isFavorite;
 
 - (void)save;
 - (void)remove;

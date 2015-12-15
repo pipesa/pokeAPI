@@ -17,6 +17,9 @@
 		556524FB1C1D544C00544135 /* PokemonTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 556524FA1C1D544C00544135 /* PokemonTableViewController.m */; };
 		556524FE1C1D545E00544135 /* FavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 556524FD1C1D545E00544135 /* FavoritesTableViewController.m */; };
 		556525021C1D581D00544135 /* Pokemon.m in Sources */ = {isa = PBXBuildFile; fileRef = 556525011C1D581D00544135 /* Pokemon.m */; };
+		55DDEFCB1C1FB5E800B95023 /* PokemonTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DDEFC91C1FB5E800B95023 /* PokemonTableViewCell.m */; };
+		55DDEFCC1C1FB5E800B95023 /* PokemonTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55DDEFCA1C1FB5E800B95023 /* PokemonTableViewCell.xib */; };
+		55DDEFCF1C1FCC1E00B95023 /* DetailTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DDEFCE1C1FCC1E00B95023 /* DetailTableViewController.m */; };
 		C93F5D0E3800B7DF33BB1ECC /* libPods-pokeAPI.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BDD772D8778447E94AB98DEA /* libPods-pokeAPI.a */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +55,11 @@
 		556524FD1C1D545E00544135 /* FavoritesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FavoritesTableViewController.m; path = Controllers/FavoritesTableViewController.m; sourceTree = "<group>"; };
 		556525001C1D581D00544135 /* Pokemon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pokemon.h; path = Model/Pokemon.h; sourceTree = "<group>"; };
 		556525011C1D581D00544135 /* Pokemon.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Pokemon.m; path = Model/Pokemon.m; sourceTree = "<group>"; };
+		55DDEFC81C1FB5E800B95023 /* PokemonTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PokemonTableViewCell.h; path = View/PokemonTableViewCell.h; sourceTree = "<group>"; };
+		55DDEFC91C1FB5E800B95023 /* PokemonTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PokemonTableViewCell.m; path = View/PokemonTableViewCell.m; sourceTree = "<group>"; };
+		55DDEFCA1C1FB5E800B95023 /* PokemonTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = PokemonTableViewCell.xib; path = View/PokemonTableViewCell.xib; sourceTree = "<group>"; };
+		55DDEFCD1C1FCC1E00B95023 /* DetailTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DetailTableViewController.h; path = Controllers/DetailTableViewController.h; sourceTree = "<group>"; };
+		55DDEFCE1C1FCC1E00B95023 /* DetailTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DetailTableViewController.m; path = Controllers/DetailTableViewController.m; sourceTree = "<group>"; };
 		647590F471CF6203337FB8A3 /* Pods-pokeAPI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pokeAPI.debug.xcconfig"; path = "Pods/Target Support Files/Pods-pokeAPI/Pods-pokeAPI.debug.xcconfig"; sourceTree = "<group>"; };
 		BDD772D8778447E94AB98DEA /* libPods-pokeAPI.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pokeAPI.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -98,6 +106,7 @@
 		556524C91C1D439A00544135 /* pokeAPI */ = {
 			isa = PBXGroup;
 			children = (
+				55DDEFC71C1FB5C000B95023 /* View */,
 				556524FF1C1D580500544135 /* Model */,
 				556524F51C1D53DE00544135 /* HTTPClient */,
 				556524F41C1D53D200544135 /* Controllers */,
@@ -145,6 +154,8 @@
 				556524FA1C1D544C00544135 /* PokemonTableViewController.m */,
 				556524FC1C1D545E00544135 /* FavoritesTableViewController.h */,
 				556524FD1C1D545E00544135 /* FavoritesTableViewController.m */,
+				55DDEFCD1C1FCC1E00B95023 /* DetailTableViewController.h */,
+				55DDEFCE1C1FCC1E00B95023 /* DetailTableViewController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -165,6 +176,16 @@
 				556525011C1D581D00544135 /* Pokemon.m */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		55DDEFC71C1FB5C000B95023 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				55DDEFC81C1FB5E800B95023 /* PokemonTableViewCell.h */,
+				55DDEFC91C1FB5E800B95023 /* PokemonTableViewCell.m */,
+				55DDEFCA1C1FB5E800B95023 /* PokemonTableViewCell.xib */,
+			);
+			name = View;
 			sourceTree = "<group>";
 		};
 		B4F28B9BC0A566223C298FA8 /* Pods */ = {
@@ -268,6 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				556524DD1C1D439A00544135 /* LaunchScreen.storyboard in Resources */,
+				55DDEFCC1C1FB5E800B95023 /* PokemonTableViewCell.xib in Resources */,
 				556524DA1C1D439A00544135 /* Assets.xcassets in Resources */,
 				556524D81C1D439A00544135 /* Main.storyboard in Resources */,
 			);
@@ -335,7 +357,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55DDEFCF1C1FCC1E00B95023 /* DetailTableViewController.m in Sources */,
 				556524F81C1D542300544135 /* PokeAPIHTTPClient.m in Sources */,
+				55DDEFCB1C1FB5E800B95023 /* PokemonTableViewCell.m in Sources */,
 				556524CF1C1D439A00544135 /* AppDelegate.m in Sources */,
 				556524CC1C1D439A00544135 /* main.m in Sources */,
 				556525021C1D581D00544135 /* Pokemon.m in Sources */,

@@ -40,11 +40,17 @@ static NSString * const pokeAPIURLString = @"http://pokeapi.co";
     
     [self GET:pathURL parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         if (complition) {
-            NSLog(@"%@",responseObject);
             NSDictionary *newObjects = responseObject[@"objects"];
             NSMutableArray *pokemons = [NSMutableArray array];
             for (NSDictionary *newItem in newObjects) {
-                [pokemons addObject:[self saveNewItems:newItem]];
+                if (newItem[@"pkdx_id"] != nil) {
+                    NSPredicate *pred = [NSPredicate predicateWithFormat:@"objID = %@",
+                                         [NSString stringWithFormat:@"%@",newItem[@"pkdx_id"]]];
+                    RLMResults *oldPokemon = [Pokemon objectsWithPredicate:pred];
+                    if ([oldPokemon count] == 0) {
+                        [pokemons addObject:[self saveNewItems:newItem]];
+                    }
+                }
             }
             
             NSDictionary *newResponse = @{@"newURL":responseObject[@"meta"][@"next"] ? responseObject[@"meta"][@"next"]:@"",
@@ -60,27 +66,36 @@ static NSString * const pokeAPIURLString = @"http://pokeapi.co";
     }];
 }
 
+/**
+ *  Save each pokemon object obtained from API
+ *
+ *  @param newPokemon Dictionary with pokemon information
+ *
+ *  @return Pokemon object
+ */
 - (Pokemon *)saveNewItems:(NSDictionary *)newPokemon {
+    
     Pokemon *newItem = [[Pokemon alloc] init];
     
-    newItem.objID = newItem[@"pkdx_id"];
-    newItem.name = newItem[@"name"];
-    newItem.nationalID = newItem[@"national_id"];
-    newItem.created = newItem[@"created"];
-    newItem.modified = newItem[@"modified"];
-    newItem.abilities = newItem[@"abilities"];
-    newItem.evolutions = newItem[@"evolutions"];
-    newItem.descriptions = newItem[@"descriptions"];
-    newItem.moves = newItem[@"moves"];
-    newItem.types = newItem[@"types"];
-    newItem.catchRate = newItem[@"catchRate"];
-    newItem.hp = newItem[@"hp"];
-    newItem.attack = newItem[@"attack"];
-    newItem.defense = newItem[@"defense"];
-    newItem.speed = newItem[@"speed"];
-    newItem.height = newItem[@"height"];
-    newItem.weight = newItem[@"weight"];
-    newItem.maleFemale = newItem[@"maleFemale"];
+    newItem.objID = [NSString stringWithFormat:@"%@",newPokemon[@"pkdx_id"]];
+    newItem.name = newPokemon[@"name"] ? newPokemon[@"name"]:@"";
+    newItem.nationalID = [NSString stringWithFormat:@"%@",newPokemon[@"national_id"]];
+    newItem.created = [NSString stringWithFormat:@"%@",newPokemon[@"created"]];
+    newItem.modified = [NSString stringWithFormat:@"%@",newPokemon[@"modified"]];
+    newItem.abilities = [NSString stringWithFormat:@"%@",newPokemon[@"abilities"]];
+    newItem.evolutions = [NSString stringWithFormat:@"%@",newPokemon[@"evolutions"]];
+    newItem.descriptions = [NSString stringWithFormat:@"%@",newPokemon[@"descriptions"]];
+    newItem.moves = [NSString stringWithFormat:@"%@",newPokemon[@"moves"]];
+    newItem.types = [NSString stringWithFormat:@"%@",newPokemon[@"types"]];
+    newItem.catchRate = [NSString stringWithFormat:@"%@",newPokemon[@"national_id"]];
+    newItem.hp = [NSString stringWithFormat:@"%@",newPokemon[@"hp"]];
+    newItem.attack = [NSString stringWithFormat:@"%@",newPokemon[@"attack"]];
+    newItem.defense = [NSString stringWithFormat:@"%@",newPokemon[@"defense"]];
+    newItem.speed = [NSString stringWithFormat:@"%@",newPokemon[@"speed"]];
+    newItem.height = [NSString stringWithFormat:@"%@",newPokemon[@"height"]];
+    newItem.weight = [NSString stringWithFormat:@"%@",newPokemon[@"weight"]];
+    newItem.maleFemale = [NSString stringWithFormat:@"%@",newPokemon[@"male_female_ratio"]];
+    newItem.isFavorite = @"0";
     
     [newItem save];
     
